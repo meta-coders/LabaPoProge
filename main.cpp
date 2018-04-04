@@ -12,6 +12,23 @@
 #include <sstream>
 using namespace std;
 
+struct country{
+  string name;
+  int rating;
+};
+
+int max(int *arr, int amount){
+  int index = 0;
+  int max = arr[0];
+  for (int i = 1; 1<amount; i++){
+    if (max<arr[i]){
+      max = arr[i];
+      index = i;
+    }
+  }
+  return index;
+}
+
 void strToArr(string line, int *arrData, int numberOfCountries){
   stringstream ss(line);
   string temp;
@@ -20,6 +37,14 @@ void strToArr(string line, int *arrData, int numberOfCountries){
   for(int j=0; j<numberOfCountries; j++) {
       getline(ss, temp, delim);
       arrData[j] = (stoi(temp));
+  }
+}
+
+void fillRating(country *countriesTable, int **dataMatrix, int numberOfCountries){
+  for (int i = 0; i < numberOfCountries; i++){
+    for (int j = 0; j < numberOfCountries; j++){
+      
+    }
   }
 }
 
@@ -40,14 +65,15 @@ int main(int argc, const char * argv[]) {
       }
     }
 
-    string *countries = new string[numberOfCountries];
+    country *countriesTable = new country[numberOfCountries];
 
     cout<<"Number of Countries: "<<stoi(numberOfCountriesstr)<<endl;
     int counter = 0;
     if (dataFile.is_open()) {
       while (counter<numberOfCountries){
         getline(dataFile, sLine);
-        countries[counter] = sLine.substr(0, sLine.find(','));
+        countriesTable[counter].name = sLine.substr(0, sLine.find(','));
+        countriesTable[counter].rating = 0;
         strToArr(
           sLine.substr(sLine.find(',')+1,sLine.length()-1),
           dataMatrix[counter],
@@ -57,15 +83,21 @@ int main(int argc, const char * argv[]) {
       }
     }
 
-    
+
 
     for (int j=0; j<numberOfCountries; j++){
-      cout<<"Country: "<<countries[j];
+      cout<<"Country: "<<countriesTable[j].name;
       for (int k=0; k<numberOfCountries; k++){
         cout<<" "<<dataMatrix[j][k];
       }
       cout<<endl;
     }
+
+    // country *countriesTable = new country[numberOfCountries];
+
     dataFile.close();
+
+
+
     return 0;
 }
