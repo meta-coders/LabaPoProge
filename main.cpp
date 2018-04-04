@@ -2,8 +2,8 @@
 //  main.cpp
 //  LabaPoProge
 //
-//  Created by Dima on 03.04.18.
-//  Copyright © 2018 dimanadko. All rights reserved.
+//  Created by part of MetaTeam on 03.04.18.
+//  Copyright © 2018 dimanadko, kuvichkamaksim. All rights reserved.
 //
 
 #include <iostream>
@@ -17,17 +17,19 @@ struct country{
   int rating;
 };
 
-int max(int *arr, int amount){
-  int index = 0;
-  int max = arr[0];
-  for (int i = 1; 1<amount; i++){
-    if (max<arr[i]){
-      max = arr[i];
-      index = i;
-    }
-  }
-  return index;
-}
+void sort(country *array, int n){
+  for (int i = 0; i < n; i++){
+    for(int j = i+1; j < n; j++){
+
+      if (array[j].rating > array[i].rating){
+        country temp = array[j];
+        array[j] = array[i];
+        array[i] = temp;
+      };
+
+    };
+  };
+};
 
 void strToArr(string line, int *arrData, int numberOfCountries){
   stringstream ss(line);
@@ -37,21 +39,43 @@ void strToArr(string line, int *arrData, int numberOfCountries){
   for(int j=0; j<numberOfCountries; j++) {
       getline(ss, temp, delim);
       arrData[j] = (stoi(temp));
-  }
-}
+  };
+};
 
-void fillRating(country *countriesTable, int **dataMatrix, int numberOfCountries){
+void fillRating(country *countriesTable, int **dataMatrix, int numberOfCountries, int *marks){
   for (int i = 0; i < numberOfCountries; i++){
-    for (int j = 0; j < numberOfCountries; j++){
-      
-    }
-  }
+    for (int k = 0; k < 10; k++){
+
+      int max = dataMatrix[0][i];
+      int index = 0;
+
+      for (int j = 0; j < numberOfCountries; j++){
+        if (dataMatrix[j][i] > max){
+          max = dataMatrix[j][i];
+          index = j;
+        };
+      };
+
+      countriesTable[index].rating+=marks[k];
+      dataMatrix[index][i] = 0;
+    };
+  };
+};
+
+void writeInFile(country *array) {
+  ofstream resultFile;
+  resultFile.open("result.csv");
+  for (int i = 0; i < 10; i++){
+    resultFile << array[i].name << " " << array[i].rating << endl;
+  };
+  resultFile.close();
 }
 
 int main(int argc, const char * argv[]) {
     ifstream dataFile;
     dataFile.open ("eurovision.csv");
     string sLine = "";
+    int marks[] = {12, 10, 8, 7, 6, 5, 4, 3, 2, 1};
 
     string numberOfCountriesstr;
     getline(dataFile, numberOfCountriesstr);
@@ -62,8 +86,8 @@ int main(int argc, const char * argv[]) {
       dataMatrix[i]=new int[numberOfCountries];
       for (int k=0; k<numberOfCountries; k++){
         dataMatrix[i][k] = 0;
-      }
-    }
+      };
+    };
 
     country *countriesTable = new country[numberOfCountries];
 
@@ -80,24 +104,18 @@ int main(int argc, const char * argv[]) {
           numberOfCountries
         );
         counter++;
-      }
-    }
-
-
-
-    for (int j=0; j<numberOfCountries; j++){
-      cout<<"Country: "<<countriesTable[j].name;
-      for (int k=0; k<numberOfCountries; k++){
-        cout<<" "<<dataMatrix[j][k];
-      }
-      cout<<endl;
-    }
-
-    // country *countriesTable = new country[numberOfCountries];
-
+      };
+    };
     dataFile.close();
 
+    fillRating(countriesTable, dataMatrix, numberOfCountries, marks);
+    sort(countriesTable, numberOfCountries);
 
+    for (int i = 0; i < numberOfCountries; i++){
+      cout << countriesTable[i].name << " " << countriesTable[i].rating << endl;
+    };
+
+    writeInFile(countriesTable);
 
     return 0;
 }
