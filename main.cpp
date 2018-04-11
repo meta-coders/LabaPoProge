@@ -1,10 +1,3 @@
-//
-//  main.cpp
-//  LabaPoProge
-//
-//  Created by part of MetaTeam on 03.04.18.
-//  Copyright © 2018 dimanadko, kuvichkamaksim. All rights reserved.
-//
 
 #include <iostream>
 #include <fstream>
@@ -96,13 +89,25 @@ int main(int argc, const char * argv[]) {
     if (dataFile.is_open()) {
       while (counter<numberOfCountries){
         getline(dataFile, sLine);
-        countriesTable[counter].name = sLine.substr(0, sLine.find(','));
-        countriesTable[counter].rating = 0;
-        strToArr(
-          sLine.substr(sLine.find(',')+1,sLine.length()-1),
-          dataMatrix[counter],
-          numberOfCountries
-        );
+        if(sLine.find('"') == 0){
+          // cout<<"DAROV";
+          string newTempString = sLine.substr(sLine.find('"')+1,sLine.length()-1);
+          countriesTable[counter].name = sLine.substr(1, newTempString.find('"'));
+          countriesTable[counter].rating = 0;
+          strToArr(
+            newTempString.substr(newTempString.find('"')+2,newTempString.length()-1),
+            dataMatrix[counter],
+            numberOfCountries
+          );
+        } else {
+          countriesTable[counter].name = sLine.substr(0, sLine.find(','));
+          countriesTable[counter].rating = 0;
+          strToArr(
+            sLine.substr(sLine.find(',')+1,sLine.length()-1),
+            dataMatrix[counter],
+            numberOfCountries
+          );
+        }
         counter++;
       };
     };
